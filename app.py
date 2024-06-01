@@ -18,9 +18,9 @@ st.sidebar.title("Upload Chat Data")
 upload_file = st.sidebar.file_uploader("Choose a file", key="file_uploader")
 
 # Sample Data Option
-st.sidebar.markdown("Or try it out with our sample data:")
-sample_data_link = "[Download Sample Data](link_to_sample_data)"
-st.sidebar.markdown(sample_data_link)
+# st.sidebar.markdown("Or try it out with our sample data:")
+# sample_data_link = "[Download Sample Data](link_to_sample_data)"
+# st.sidebar.markdown(sample_data_link)
 
 if upload_file is not None:
     bytes_data = upload_file.getvalue()
