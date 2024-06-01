@@ -15,7 +15,7 @@ st.markdown("""
 
 # Sidebar Title and File Uploader
 st.sidebar.title("Upload Chat Data")
-upload_file = st.sidebar.file_uploader("Choose a file")
+upload_file = st.sidebar.file_uploader("Choose a file", key="file_uploader")
 
 # Sample Data Option
 st.sidebar.markdown("Or try it out with our sample data:")
