@@ -6,21 +6,27 @@ def preprocess(data):
     data = data.replace('\u202f', ' ')
     
     messages = re.split(pattern, data)[1:]
-    
     dates = re.findall(pattern, data)
     
-    df = pd.DataFrame({'user_msg' : messages, 'msg_date' : dates})
+    df = pd.DataFrame({'user_msg': messages, 'msg_date': dates})
 
-    # convert mesg_date type
-    df['msg_date'] = pd.to_datetime(df['msg_date'], format = '%d/%m/%y, %I:%M %p - ')
+    # Define multiple date formats as a list
+    date_formats = ['%d/%m/%y, %I:%M %p - ', '%m/%d/%y, %I:%M %p - ']
 
-    df.rename(columns = {'msg_date' : 'date'}, inplace = True)
+    parsed_dates = pd.to_datetime(df['msg_date'], format=date_formats[0], errors='coerce')
+
+    for format in date_formats[1:]:
+        parsed_dates = parsed_dates.combine_first(pd.to_datetime(df['msg_date'], format=format, errors='coerce'))
+
+    df['msg_date'] = parsed_dates
+
+    df.rename(columns={'msg_date': 'date'}, inplace=True)
     
     users = []
     messages = []
 
     for message in df['user_msg']:
-        entry = re.split('([\w\W]+?):\s',message)
+        entry = re.split('([\w\W]+?):\s', message)
 
         if entry[1:]: # user name
             users.append(entry[1])
@@ -32,7 +38,7 @@ def preprocess(data):
 
     df['user'] = users
     df['message'] = messages
-    df.drop(columns = ['user_msg'], inplace = True)
+    df.drop(columns=['user_msg'], inplace=True)
     
     df['only_date'] = df['date'].dt.date
     df['year'] = df['date'].dt.year
